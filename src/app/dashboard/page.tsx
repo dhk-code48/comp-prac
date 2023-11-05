@@ -12,24 +12,28 @@ import {
   OrganizedWorksheetsByChapter,
   Worksheet,
 } from "@/lib/ogranizeByChapters";
-import { getChapterName } from "@/lib/getChapterName";
+import { getChapterDetails } from "@/lib/getChapterName";
 import { FC } from "react";
+import { getWorkSheets } from "@/db/read/getWorkSheets";
+import { OrganizedWorksheets } from "@/lib/organizeByGrades";
 
-const Chapter: FC<{
+const ChapterWorksheet: FC<{
   chapterId: string;
-  worksheets: IWorkSheet[];
-}> = async ({ chapterId, worksheets }) => {
-  // const chapterName: IChapter | any = await getChapterName(chapterId);
-  // // console.log(chapters.or);
-  // console.log("CHAPTERS => ", chapterName && chapterName);
+  chapterWorksheets: IWorkSheet[];
+}> = async ({ chapterId, chapterWorksheets }) => {
+  const chapterDetails: IChapter | null = await getChapterDetails(chapterId);
+  console.log("chapterDetails", chapterDetails);
 
   return (
     <>
-      {/* <h1 className="font-bold text-xl">{chapterName && chapterName}</h1> */}
-      {/* {Object.keys(worksheets).map((worksheetId) => {
-        const worksheet = worksheets[worksheetId];
-        return <WorkSheetsCard title={worksheet.title} />;
-      })} */}
+      <h1 className="font-bold text-xl">
+        {chapterDetails && chapterDetails.title}
+      </h1>
+      <div className="flex flex-wrap justify-between gap-y-5 mx-10 py-5">
+        {chapterWorksheets.map((worksheet) => {
+          return <WorkSheetsCard title={worksheet.title} />;
+        })}
+      </div>
       <hr />
     </>
   );
@@ -43,21 +47,10 @@ export default async function Home() {
   const userInfo: IUser | null = await getUserInfo(session.user.id);
 
   if (!userInfo) return <h1>Loading</h1>;
-  console.log(
-    process.env.NEXT_CLIENT_URL +
-      "/api/worksheets?section=[" +
-      userInfo.assignedSections +
-      "]"
-  );
 
-  const data = await fetch(
-    process.env.NEXT_CLIENT_URL +
-      "/api/worksheets?section=[" +
-      userInfo.assignedSections.map((id) => '"' + id + '"') +
-      "]"
+  const sectionWorksheets: OrganizedWorksheets | null = await getWorkSheets(
+    userInfo.assignedSections
   );
-  const chapters: OrganizedWorksheetsByChapter =
-    data.status === 200 ? await data.json() : null;
 
   return (
     <main>
@@ -75,10 +68,25 @@ export default async function Home() {
           Overview
         </h2>
         <div className="mt-5 space-y-3">
-          {chapters &&
-            Object.keys(chapters).map((chapterId) => {
-              const worksheets = chapters[chapterId];
-              return <Chapter chapterId={chapterId} worksheets={worksheets} />;
+          {sectionWorksheets &&
+            Object.keys(sectionWorksheets).map((sectionId) => {
+              return (
+                <>
+                  {Object.keys(sectionWorksheets[sectionId]).map(
+                    (chapterId) => {
+                      const chapterWorksheets =
+                        sectionWorksheets[sectionId][chapterId];
+                      console.log("CHAPTER ID", chapterId);
+                      return (
+                        <ChapterWorksheet
+                          chapterId={chapterId}
+                          chapterWorksheets={chapterWorksheets}
+                        />
+                      );
+                    }
+                  )}
+                </>
+              );
             })}
         </div>
       </div>

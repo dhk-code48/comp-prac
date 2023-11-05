@@ -4,11 +4,29 @@ import UserSchema from "@/models/UserSchema";
 import { addWorkSheet } from "@/db/create/addWorkSheets";
 import WorkSheetModel from "@/models/WorkSheetSchema";
 import { Worksheet, organizeByChapters } from "@/lib/ogranizeByChapters";
+import fs from "fs";
+import formidable from "formidable";
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, title, description, gradeId, sectionId, pdfLink } =
-      await request.json();
+    const data = await request.formData();
+    const file = data.get("file");
+    const userId = data.get("userId")?.toString();
+    const title = data.get("title")?.toString();
+    const description = data.get("description")?.toString();
+    const gradeId = data.get("gradeId")?.toString();
+    const sectionId = data.get("sectionId")?.toString();
+
+    if (!file || !userId || !title || !description || !gradeId || !sectionId) {
+      return NextResponse.json({ message: "No File" }, { status: 500 });
+    }
+    const byteData = await file.arrayBuffer();
+    const buffer = Buffer.from(byteData);
+    const path = `./public/${title}${sectionId}`;
+    await writeFile(path, buffer);
+
+    // const { userId, title, description, gradeId, sectionId, pdfLink } =
+    //   await request.json();
 
     await connectMongoDb();
 
@@ -23,13 +41,7 @@ export async function POST(request: NextRequest) {
         adminUser.assignedSections.includes(sectionId)) ||
       adminUser.role === "superadmin"
     ) {
-      const worksheet = addWorkSheet(
-        title,
-        description,
-        gradeId,
-        sectionId,
-        pdfLink
-      );
+      const worksheet = addWorkSheet(title, description, gradeId, sectionId);
       return NextResponse.json(
         { worksheet: { ...worksheet }, message: "WorkSheet Created" },
         { status: 201 }
@@ -106,6 +118,7 @@ export async function PUT(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const sectionsId = request.nextUrl.searchParams.get("sectionsId");
 
+  await connectMongoDb();
   if (!sectionsId) {
     const worksheetId = request.nextUrl.searchParams.get("worksheetId");
     const worksheets = await WorkSheetModel.findById(worksheetId);
@@ -126,9 +139,6 @@ export async function GET(request: NextRequest) {
       );
   } else {
     try {
-      // Connect to MongoDB
-      await connectMongoDb();
-
       // Find worksheets by section IDs
       const worksheets: Worksheet[] = await WorkSheetModel.find({
         sectionId: { $in: JSON.parse(sectionsId) },

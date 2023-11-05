@@ -10,7 +10,7 @@ export default async function getUserInfo(
     res.json()
   );
 
-  const userInfo: IUser = response.user;
+  const userInfo: IUser = response;
 
   return userInfo;
 }

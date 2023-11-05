@@ -25,9 +25,15 @@ export interface IWorkSheet extends Document {
   gradeId: String;
   sectionId: String;
   state: String;
-  pdfLink: String;
   createdAt: String;
-
+  updatedAt: String;
+}
+export interface IWStates extends Document {
+  worksheetId: String;
+  gradeId: String;
+  sectionId: String;
+  state: String;
+  createdAt: String;
   updatedAt: String;
 }
 export interface IChapter extends Document {

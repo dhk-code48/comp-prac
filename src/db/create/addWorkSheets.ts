@@ -5,8 +5,7 @@ async function addWorkSheet(
   title: string,
   description: string,
   gradeId: string,
-  sectionId: string,
-  pdfLink: string
+  sectionId: string
 ): Promise<IWorkSheet> {
   try {
     const newWorkSheet = WorkSheetModel.create({
@@ -14,7 +13,6 @@ async function addWorkSheet(
       description,
       gradeId,
       sectionId,
-      pdfLink,
       state: "incompleted",
     });
 

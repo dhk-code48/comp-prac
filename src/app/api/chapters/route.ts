@@ -15,11 +15,7 @@ export async function GET(request: NextRequest) {
 
       console.log("chapter", chapter);
 
-      const output = chapter ? chapter : [];
-
-      // Ensure that the result is converted to plain JavaScript objects.
-
-      return NextResponse.json({ message: "OK" }, { status: 200 });
+      return NextResponse.json({ ...chapter }, { status: 200 });
     } catch (error) {
       return NextResponse.json({ error: "An error occurred" }, { status: 500 });
     }

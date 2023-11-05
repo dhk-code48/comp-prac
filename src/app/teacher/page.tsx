@@ -5,6 +5,7 @@ import { getSectionAndGrade } from "@/db/read/getSection";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SectionTabContent from "@/components/SectionTabContent";
 import { LucideMenu, LucideUser2 } from "lucide-react";
+import Link from "next/link";
 
 const SectionTabTrigger: FC<{
   id: string;
@@ -22,37 +23,34 @@ const SectionTabTrigger: FC<{
   );
 };
 
+const Sections: FC<{ sectionId: string }> = async ({ sectionId }) => {
+  const gradeData = await fetch(
+    process.env.NEXT_CLIENT_URL + "/api/section?id=" + sectionId
+  ).then((res) => res.json());
+
+  return (
+    <div className="px-5 py-4 border-b">
+      <Link
+        href={"/teacher/" + sectionId}
+        className="font-medium text-xl text-gray-800"
+      >
+        {gradeData.grade.grade} "{gradeData.section.section}"
+      </Link>
+    </div>
+  );
+};
+
 const TeacherPage: FC = async () => {
   const teacherInfo = await getUserData();
   if (!teacherInfo) {
     return <h1>Cann't Fetch User Info</h1>;
   }
-  const worksheetsBySection = await getWorkSheets(teacherInfo.assignedSections);
-
   return (
-    <div className="py-10 px-1">
-      {!worksheetsBySection ? (
-        <h1>Loading</h1>
-      ) : (
-        <Tabs defaultValue="12C" className="w-full">
-          <TabsList>
-            {Object.keys(worksheetsBySection).map((sectionId) => {
-              const sections = worksheetsBySection[sectionId];
-              return <SectionTabTrigger id={sectionId} />;
-            })}
-          </TabsList>
-          {Object.keys(worksheetsBySection).map((sectionId) => {
-            const sections = worksheetsBySection[sectionId];
-            return (
-              <SectionTabContent
-                id={sectionId}
-                sections={sections}
-                userId={teacherInfo._id}
-              />
-            );
-          })}
-        </Tabs>
-      )}
+    <div className="py-10 px-5">
+      <h2 className="font-bold text-2xl mb-5">Classes</h2>
+      {teacherInfo.assignedSections.map((sectionId) => {
+        return <Sections sectionId={sectionId} />;
+      })}
     </div>
   );
 };

@@ -17,6 +17,7 @@ export const getWorkSheets = async (
   if (!data.ok) return null;
 
   const jsonData = await data.json();
+  console.table(jsonData);
 
   if (jsonData) {
     return organizeByGradesAndChapters(jsonData.worksheets);

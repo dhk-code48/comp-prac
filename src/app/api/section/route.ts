@@ -23,15 +23,12 @@ export async function GET(request: NextRequest) {
     });
     console.log("SECTIOn", grade);
 
-    if (!section) {
-      return NextResponse.json(
-        { message: "Section not found" },
-        { status: 404 }
-      ); // Not Found
+    if (!section || !grade) {
+      return NextResponse.json({ message: "Not found" }, { status: 404 }); // Not Found
     }
 
     return NextResponse.json(
-      { section: section.section, grade: grade?.grade },
+      { section: section, grade: grade },
       { status: 200 }
     ); // OK
   } catch (error) {

@@ -7,7 +7,6 @@ const WorkSheetSchema = new Schema<IWorkSheet>(
     description: String,
     gradeId: String,
     sectionId: String,
-    pdfLink: String,
     state: String,
   },
   { timestamps: true, id: true }
