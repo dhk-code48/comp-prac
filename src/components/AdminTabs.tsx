@@ -1,17 +1,18 @@
 import { getWorkSheetsStates } from "@/lib/getWorkSheetStates";
-import { OrganizedWorksheets, Worksheet } from "@/lib/organizeByGrades";
+import { OrganizedWorksheets } from "@/lib/organizeByGrades";
 import React, { FC } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getGradeInfo } from "@/lib/getGradeInfo";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { CheckCheck } from "lucide-react";
+import { IWorkSheet } from "@/types";
 
 const AdminGradeTabs: FC<{
   grade: string;
-  data: Record<string, Worksheet[]>;
+  data: Record<string, IWorkSheet[]>;
 }> = async ({ grade, data }) => {
   const gradeInfo = await getGradeInfo(grade);
-  console.log(gradeInfo);
+
   return (
     <Tabs defaultValue="c">
       <TabsList>
@@ -90,7 +91,6 @@ const AdminGradeTabs: FC<{
 };
 
 const AdminTabs: FC<{ allClasses: OrganizedWorksheets }> = ({ allClasses }) => {
-  console.log(allClasses);
   return (
     <div>
       <Tabs defaultValue="11" className="space-y-4">

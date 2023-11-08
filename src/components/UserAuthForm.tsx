@@ -38,7 +38,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         setError("Invalid Credentials !!");
       }
 
-      console.log("RESPONSE => ", res);
       router.push("/dashboard");
     } catch {
       setError("Error While Login !!");

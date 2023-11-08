@@ -6,10 +6,10 @@ export const getUserData = async (): Promise<IUser | null> => {
   const session = await getServerSession(authOptions);
   if (!session) return null;
 
-  if (!process.env.NEXT_CLIENT_URL) return null;
+  if (!process.env.CLIENT_URL) return null;
 
   const infoRes = await fetch(
-    process.env.NEXT_CLIENT_URL + "/api/users?id=" + session.user.id
+    process.env.CLIENT_URL + "/api/users?id=" + session.user.id
   );
 
   if (!infoRes.ok) {

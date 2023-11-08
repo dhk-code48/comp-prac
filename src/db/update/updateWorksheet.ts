@@ -5,10 +5,8 @@ export interface IUpatedWorksheet {
   title: String;
   state: String;
   chapterId: String;
-  description: String;
   gradeId: String;
   sectionId: String;
-  pdfLink: String;
   createdAt: {
     $date: String;
   };
@@ -34,10 +32,10 @@ async function updateWorksheet(
           title: updatedData.title,
           state: updatedData.state,
           chapterId: updatedData.chapterId,
-          description: updatedData.description,
+
           gradeId: updatedData.gradeId,
           sectionId: updatedData.sectionId,
-          pdfLink: updatedData.pdfLink,
+
           createdAt: {
             $date: updatedData.createdAt.$date,
           },
@@ -59,10 +57,10 @@ async function updateWorksheet(
           title: updatedData.title,
           state: updatedData.state,
           chapterId: updatedData.chapterId,
-          description: updatedData.description,
+
           gradeId: updatedData.gradeId,
           sectionId: updatedData.sectionId,
-          pdfLink: updatedData.pdfLink,
+
           createdAt: {
             $date: updatedData.createdAt.$date,
           },

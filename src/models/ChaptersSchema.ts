@@ -5,6 +5,7 @@ const ChaptersSchema = new Schema<IChapter>(
   {
     sectionId: String,
     title: String,
+    gradeId: String,
   },
   { timestamps: true, id: true }
 );

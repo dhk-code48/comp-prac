@@ -5,9 +5,9 @@ import { IUser } from "./types";
 export default withAuth(
   async function middleware(request: NextRequestWithAuth) {
     try {
-      if (process.env.NEXT_CLIENT_URL && request.nextauth.token) {
+      if (request.nextauth.token) {
         const fetchUserData = await fetch(
-          process.env.NEXT_CLIENT_URL +
+          "http://129.150.50.164:3000" +
             "/api/users?id=" +
             request.nextauth.token.id
         );
@@ -35,7 +35,6 @@ export default withAuth(
               return NextResponse.rewrite(new URL("/denied", request.url));
             }
           } else {
-            console.log("E");
             return NextResponse.next();
           }
         } else {

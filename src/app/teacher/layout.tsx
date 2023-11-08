@@ -1,5 +1,8 @@
+import LogOut from "@/components/LogOut";
+import { Button } from "@/components/ui/button";
 import { getUserData } from "@/db/read/getUserData";
 import { LucideMoreVertical, LucideUser } from "lucide-react";
+import { signOut } from "next-auth/react";
 import React, { FC } from "react";
 
 const TeachersPageLayout: FC<{ children: React.ReactNode }> = async ({
@@ -27,7 +30,7 @@ const TeachersPageLayout: FC<{ children: React.ReactNode }> = async ({
           </div>
         </div>
         <div>
-          <LucideMoreVertical size={20} />
+          <LogOut />
         </div>
       </div>
       <main className="pt-20">{children}</main>

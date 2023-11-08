@@ -4,10 +4,10 @@ import mongoose, { Model, Schema, model } from "mongoose";
 const WorkSheetSchema = new Schema<IWorkSheet>(
   {
     title: String,
-    description: String,
     gradeId: String,
     sectionId: String,
     state: String,
+    chapterId: String,
   },
   { timestamps: true, id: true }
 );

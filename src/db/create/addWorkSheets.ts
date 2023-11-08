@@ -3,17 +3,17 @@ import { IWorkSheet } from "@/types";
 
 async function addWorkSheet(
   title: string,
-  description: string,
   gradeId: string,
-  sectionId: string
+  sectionId: string,
+  chapterId: string
 ): Promise<IWorkSheet> {
   try {
-    const newWorkSheet = WorkSheetModel.create({
+    const newWorkSheet = await WorkSheetModel.create({
       title,
-      description,
       gradeId,
       sectionId,
-      state: "incompleted",
+      chapterId,
+      state: "unpublished",
     });
 
     return newWorkSheet;

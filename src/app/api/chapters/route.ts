@@ -3,9 +3,25 @@ import ChaptersModel from "@/models/ChaptersSchema";
 import { IChapter } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  try {
+    await connectMongoDb();
+    const newChapter = await ChaptersModel.create({
+      gradeId: body.gradeId,
+      sectionId: body.sectionId,
+      title: body.title,
+    });
+    return NextResponse.json({ ...newChapter }, { status: 200 });
+  } catch {
+    return NextResponse.json({ error: "An error occurred" }, { status: 500 });
+  }
+}
+
 export async function GET(request: NextRequest) {
   const chapterId = request.nextUrl.searchParams.get("chapterId");
-  console.log(chapterId);
+  const sectionId = request.nextUrl.searchParams.get("sectionId");
+
   if (chapterId) {
     try {
       await connectMongoDb();
@@ -13,10 +29,20 @@ export async function GET(request: NextRequest) {
         chapterId
       ).lean();
 
-      console.log("chapter", chapter);
-
       return NextResponse.json({ ...chapter }, { status: 200 });
     } catch (error) {
+      return NextResponse.json({ error: "An error occurred" }, { status: 500 });
+    }
+  } else if (sectionId) {
+    console.log(sectionId);
+    try {
+      await connectMongoDb();
+      const chapters: IChapter[] | null = await ChaptersModel.find({
+        sectionId: sectionId,
+      });
+      console.log(chapters);
+      return NextResponse.json(chapters, { status: 200 });
+    } catch {
       return NextResponse.json({ error: "An error occurred" }, { status: 500 });
     }
   } else {

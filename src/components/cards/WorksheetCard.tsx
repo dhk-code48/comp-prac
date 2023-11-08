@@ -21,7 +21,6 @@ const WorksheetCard: FC<{ worksheet: IWorkSheet; userId: string }> = ({
       title: worksheet.title,
       state: state,
       chapterId: worksheet.chapterId,
-      description: worksheet.description,
       gradeId: worksheet.gradeId,
       sectionId: worksheet.sectionId,
       createdAt: {
@@ -30,16 +29,28 @@ const WorksheetCard: FC<{ worksheet: IWorkSheet; userId: string }> = ({
       updatedAt: {
         $date: worksheet.updatedAt,
       },
-      pdfLink: worksheet.pdfLink,
     };
     const response = await updateWorksheet(id, newWorkSheet, userId);
+    if (state === "published") {
+      await fetch(
+        "http://129.150.50.164:3000/api/studentstates?worksheetId=" +
+          worksheet._id,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            sectionId: worksheet.sectionId,
+            gradeId: worksheet.gradeId,
+          }),
+        }
+      ).finally(() => window.location.reload());
+    }
     return response;
   }
 
   return (
     <div
       onClick={() => route.push("/teacher/worksheet/" + worksheet._id)}
-      className="flex justify-between px-5 py-5 my-5 border rounded-lg cursor-pointer"
+      className="flex justify-between px-5 py-5 my-5 border rounded-lg cursor-pointer w-full lg:w-auto gap-x-10"
     >
       <div>
         <h1>{worksheet.title}</h1>
@@ -59,6 +70,7 @@ const WorksheetCard: FC<{ worksheet: IWorkSheet; userId: string }> = ({
           </Button>
         ) : (
           <Button
+            variant="secondary"
             onClick={() =>
               handleWorkSheetUpdate(worksheet._id, worksheet, "published")
             }

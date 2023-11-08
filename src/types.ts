@@ -20,7 +20,6 @@ export interface IUser extends Document {
 
 export interface IWorkSheet extends Document {
   title: String;
-  description: String;
   chapterId: String;
   gradeId: String;
   sectionId: String;
@@ -39,11 +38,13 @@ export interface IWStates extends Document {
 export interface IChapter extends Document {
   title: String;
   sectionId: String;
+  gradeId: String;
 }
 export interface IStudentStates extends Document {
   studentId: string;
   sectionId: String;
   gradeId: String;
+
   worksheetId: string;
   state: string;
 }
